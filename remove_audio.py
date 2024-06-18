@@ -36,16 +36,12 @@ def process_all_videos(input_dir, output_dir, final_output_dir):
     if not os.path.exists(final_output_dir):
         os.makedirs(final_output_dir)
 
-    threads = []
+    
     for file_name in os.listdir(input_dir):
         if file_name.endswith(".mp4"):
             video_path = os.path.join(input_dir, file_name)
-            thread = threading.Thread(target=process_video, args=(video_path, output_dir, final_output_dir))
-            threads.append(thread)
-            thread.start()
-
-    for thread in threads:
-        thread.join()
+            process_video(video_path, output_dir, final_output_dir)
+            
 
 
 if __name__ == "__main__":

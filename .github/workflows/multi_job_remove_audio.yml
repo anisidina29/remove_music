@@ -1,4 +1,4 @@
-name: multi job  Remove Audio
+name: multi job Remove Audio
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ jobs:
   define-videos:
     runs-on: ubuntu-latest
     outputs:
-      videos: ${{ steps.get-videos.outputs.videos }}
+      video_paths: ${{ steps.get-video-paths.outputs.video_paths }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,24 +19,27 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update && sudo apt-get upgrade -y
           pip install gdown
           pip install --upgrade gdown
 
       - name: Create videos folder
         run: mkdir -p $GITHUB_WORKSPACE/videos
 
-      - name: Get Videos
-        id: get-videos
+      - name: Download videos
+        run: gdown --folder ${{ secrets.LINK }} -O $GITHUB_WORKSPACE/videos
+
+      - name: List downloaded videos
+        id: get-video-paths
         run: |
-          echo 'videos=["https://drive.google.com/uc?export=download&id=1xZQlmnligBouXd3LRoOReAqG4eJuaMtg"]' >> $GITHUB_OUTPUT
+          videos=$(ls $GITHUB_WORKSPACE/videos/*.mp4 | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "video_paths=$videos" >> $GITHUB_OUTPUT
 
   process-videos:
     needs: define-videos
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        video: ${{ fromJSON(needs.define-videos.outputs.videos) }}
+        video_path: ${{ fromJSON(needs.define-videos.outputs.video_paths) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,21 +57,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
           pip install demucs
-          pip install gdown
-          pip install --upgrade gdown
 
-      - name: Create user folders
-        run: mkdir -p $GITHUB_WORKSPACE/videos
-
-      - name: Download video
-        run: gdown --url ${{ matrix.video }} -O $GITHUB_WORKSPACE/videos/video.mp4
+      - name: Create output folders
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/demucs_output
+          mkdir -p $GITHUB_WORKSPACE/videos_without_music
 
       - name: Run python script
-        run: python remove_audio.py
-        
+        run: python remove_audio.py ${{ matrix.video_path }}
+
       - name: Archive processed video
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: processed_video_${{ matrix.video }}
+          name: processed_video_${{ matrix.video_path }}
           path: videos_without_music

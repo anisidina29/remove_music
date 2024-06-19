@@ -63,6 +63,9 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/videos_without_music
 
       - name: Run python script
+        run: python -m demucs.separate ${{ matrix.video_path }}
+        
+      - name: Run python script
         run: python remove_audio.py ${{ matrix.video_path }}
 
       - name: Archive processed video

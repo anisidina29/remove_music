@@ -16,7 +16,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
            python-version: '3.8'
-
+      - name: Print date and time
+        run: echo "Workflow started at $(TZ='Asia/Ho_Chi_Minh' date)"
+      
       - name: Install dependencies
         run: |
           pip install gdown

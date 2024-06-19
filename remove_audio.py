@@ -1,7 +1,7 @@
 import os
 import subprocess
-import threading
 import shutil
+import sys
 
 def process_video(video_path, output_dir, final_output_dir):
     print(video_path)
@@ -29,24 +29,20 @@ def process_video(video_path, output_dir, final_output_dir):
     # Xóa video tạm thời
     os.remove(temp_video_path)
     os.remove(video_path)
-def process_all_videos(input_dir, output_dir, final_output_dir):
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    if not os.path.exists(final_output_dir):
-        os.makedirs(final_output_dir)
-
-    
-    for file_name in os.listdir(input_dir):
-        if file_name.endswith(".mp4"):
-            video_path = os.path.join(input_dir, file_name)
-            process_video(video_path, output_dir, final_output_dir)
-            
-
 
 if __name__ == "__main__":
-    input_directory = "videos"  # Thư mục chứa các video gốc
+    if len(sys.argv) != 2:
+        print("Usage: python remove_audio.py <video_path>")
+        sys.exit(1)
+
+    video_path = sys.argv[1]
     output_directory = "demucs_output"  # Thư mục lưu kết quả xử lý
     final_output_directory = "videos_without_music"  # Thư mục chứa video sau khi xử lý
 
-    process_all_videos(input_directory, output_directory, final_output_directory)
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
+
+    if not os.path.exists(final_output_directory):
+        os.makedirs(final_output_directory)
+
+    process_video(video_path, output_directory, final_output_directory)

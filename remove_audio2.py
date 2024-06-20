@@ -6,7 +6,7 @@ import sys
 def process_video(video_path, output_dir, final_output_dir):
     print(f"Processing video: {video_path}")
     # Tách âm thanh bằng demucs
-    command = f"python -m demucs.separate  --out {output_dir} {video_path}"
+    command = f"python -m demucs.separate  --out {output_dir} "{video_path}""
     subprocess.run(command, shell=True, check=True)
 
     # Đường dẫn tới tệp âm thanh giọng hát đã tách

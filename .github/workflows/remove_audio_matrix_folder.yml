@@ -1,0 +1,63 @@
+name: Remove Audio 2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
+  
+
+jobs:
+  remove_audio:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        link:
+          #9
+          - "https://drive.google.com/drive/folders/1FU482KJiXU2mj8vrhxQ-nJPGjXLD7M7d?usp=sharing"
+          #8
+          - "https://drive.google.com/drive/folders/1RcaEA0k0IUyM-KwKLTX2wBSAJdUgdmSF?usp=sharing"
+          #7
+          - "https://drive.google.com/drive/folders/14PmOyD5FgXSJqoWvkydKTGfsyuuK5Zrs?usp=sharing"
+          #6
+          - "https://drive.google.com/drive/folders/1rYPxndxCMJOa9Fbizw6IOZEtYL7olNIE?usp=sharing"
+          #1
+          - "https://drive.google.com/drive/folders/1ykLUhnyCj2p8MJJdwPV9W7hjDhK3r9vh?usp=sharing"
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+           python-version: '3.8'
+      - name: Print date and time
+        run: echo "Workflow started at $(TZ='Asia/Ho_Chi_Minh' date)"
+
+      - name: Update and upgrade packages
+        run: sudo apt-get update && sudo apt-get upgrade -y
+        
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y ffmpeg
+          pip install demucs
+          pip install gdown
+          pip install --upgrade gdown
+
+      - name: Create user folders
+        run: mkdir -p $GITHUB_WORKSPACE/videos
+
+      - name: Dowload video 
+        run: gdown --folder ${{ matrix.link }} -O $GITHUB_WORKSPACE/videos
+      
+ 
+      - name: Run python script
+        run: python remove_audio2.py
+        
+      - name: Archive screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: videos_without_music
+          path: videos_without_music

@@ -36,7 +36,7 @@ jobs:
 
  
       - name: Run python script
-        run: python remove_audio.py
+        run: python remove_audio2.py
         
       - name: Archive screenshots
         uses: actions/upload-artifact@v4

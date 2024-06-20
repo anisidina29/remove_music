@@ -19,12 +19,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # sudo apt-get update && sudo apt-get upgrade -y
-          # sudo apt-get install -y software-properties-common
-          # sudo add-apt-repository -y ppa:savoury1/ffmpeg4
-          # sudo apt-get update
-          # sudo apt-get install -y ffmpeg
-          # pip install demucs
+          sudo apt-get update && sudo apt-get upgrade -y
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:savoury1/ffmpeg4
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          pip install demucs
           pip install gdown
           pip install --upgrade gdown
 
@@ -34,27 +34,13 @@ jobs:
       - name: Dowload video 
         run: gdown --folder ${{ secrets.LINK }} -O $GITHUB_WORKSPACE/videos
       
-      - name: List videos
-        run: |
-          videos=$(ls $GITHUB_WORKSPACE/videos/*.mp4)
-          IFS=' ' read -r -a videos_array <<< "$videos"
-          echo "Found videos:"
-          for video in "${videos_array[@]}"; do
-            echo "- $video"
-          done
+ 
+      - name: Run python script
+        run: python remove_audio2.py
+        
       - name: Archive screenshots
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{videos_array}}
-          path: ${{videos_array}}
- 
-      # - name: Run python script
-      #   run: python remove_audio2.py
-        
-      # - name: Archive screenshots
-      #   uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: videos_without_music
-      #     path: videos_without_music
+          name: videos_without_music
+          path: videos_without_music

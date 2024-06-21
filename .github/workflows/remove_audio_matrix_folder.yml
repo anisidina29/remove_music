@@ -2,9 +2,6 @@ name: Remove Audio 2
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
-  
 
 jobs:
   remove_audio:
@@ -12,43 +9,42 @@ jobs:
     continue-on-error: true
 
     strategy:
-
       matrix:
-      
         link:
-          #9
-          - "https://drive.google.com/drive/folders/1FU482KJiXU2mj8vrhxQ-nJPGjXLD7M7d?usp=sharing"
-          #8
-          - "https://drive.google.com/drive/folders/1RcaEA0k0IUyM-KwKLTX2wBSAJdUgdmSF?usp=sharing"
-          #7
-          - "https://drive.google.com/drive/folders/14PmOyD5FgXSJqoWvkydKTGfsyuuK5Zrs?usp=sharing"
-          #6
-          - "https://drive.google.com/drive/folders/1rYPxndxCMJOa9Fbizw6IOZEtYL7olNIE?usp=sharing"
-          #5
-          - "https://drive.google.com/drive/folders/11Rvo6nKmjmqxypdIgdx8YB_5uECXAzIu?usp=sharing"
-          #4
-          - "https://drive.google.com/drive/folders/1DQq3VNIMf526taU_kD4rJLjnjhPf-aCP?usp=sharing"
-          #3
-          - "https://drive.google.com/drive/folders/1NljvTnQhyjCDJHSnP08Rx7Vfst7PtMOt?usp=sharing"
-          #2
-          - "https://drive.google.com/drive/folders/1NljvTnQhyjCDJHSnP08Rx7Vfst7PtMOt?usp=sharing"
-          #1
-          - "https://drive.google.com/drive/folders/1ykLUhnyCj2p8MJJdwPV9W7hjDhK3r9vh?usp=sharing"
-    
+          - index: 1
+            url: "https://drive.google.com/drive/folders/1FU482KJiXU2mj8vrhxQ-nJPGjXLD7M7d?usp=sharing"
+          - index: 2
+            url: "https://drive.google.com/drive/folders/1RcaEA0k0IUyM-KwKLTX2wBSAJdUgdmSF?usp=sharing"
+          - index: 3
+            url: "https://drive.google.com/drive/folders/14PmOyD5FgXSJqoWvkydKTGfsyuuK5Zrs?usp=sharing"
+          - index: 4
+            url: "https://drive.google.com/drive/folders/1rYPxndxCMJOa9Fbizw6IOZEtYL7olNIE?usp=sharing"
+          - index: 5
+            url: "https://drive.google.com/drive/folders/11Rvo6nKmjmqxypdIgdx8YB_5uECXAzIu?usp=sharing"
+          - index: 6
+            url: "https://drive.google.com/drive/folders/1DQq3VNIMf526taU_kD4rJLjnjhPf-aCP?usp=sharing"
+          - index: 7
+            url: "https://drive.google.com/drive/folders/1NljvTnQhyjCDJHSnP08Rx7Vfst7PtMOt?usp=sharing"
+          - index: 8
+            url: "https://drive.google.com/drive/folders/1NljvTnQhyjCDJHSnP08Rx7Vfst7PtMOt?usp=sharing"
+          - index: 9
+            url: "https://drive.google.com/drive/folders/1ykLUhnyCj2p8MJJdwPV9W7hjDhK3r9vh?usp=sharing"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-           python-version: '3.8'
+          python-version: '3.8'
+
       - name: Print date and time
         run: echo "Workflow started at $(TZ='Asia/Ho_Chi_Minh' date)"
 
       - name: Update and upgrade packages
         run: sudo apt-get update && sudo apt-get upgrade -y
-        
+
       - name: Install dependencies
         run: |
           sudo apt-get install -y ffmpeg
@@ -59,16 +55,15 @@ jobs:
       - name: Create user folders
         run: mkdir -p $GITHUB_WORKSPACE/videos
 
-      - name: Dowload video 
-        run: gdown --folder ${{ matrix.link }} -O $GITHUB_WORKSPACE/videos
-      
- 
-      - name: Run python script
+      - name: Download video
+        run: gdown --folder ${{ matrix.link.url }} -O $GITHUB_WORKSPACE/videos
+
+      - name: Run Python script
         run: python remove_audio2.py
-        
+
       - name: Archive screenshots
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ matrix.link | regex_replace('https://drive.google.com/drive/folders/', '') | replace('/', '-') | replace(':', '-') }}
+          name: video-${{ matrix.index }}-without-music
           path: videos_without_music

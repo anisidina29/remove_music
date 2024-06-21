@@ -2,16 +2,19 @@ name: Remove Audio 2
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
+  # schedule:
+  #   - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
   
 
 jobs:
   remove_audio:
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     strategy:
+
       matrix:
+      
         link:
           #9
           - "https://drive.google.com/drive/folders/1FU482KJiXU2mj8vrhxQ-nJPGjXLD7M7d?usp=sharing"

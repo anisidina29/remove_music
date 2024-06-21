@@ -70,5 +70,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: videos_without_music
+          name: ${{ matrix.link }}
           path: videos_without_music

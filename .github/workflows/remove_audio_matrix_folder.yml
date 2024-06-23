@@ -78,9 +78,9 @@ jobs:
           name: ${{ matrix.link.index }}
           path: videos_without_music
 
-      - name: Archive processed videos
+      - name: Archive processed videos no audio
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ env.SUBSTRING }}
-          path: videos_without_music
+          name: ${{ matrix.link.index }}noaudio
+          path: videos

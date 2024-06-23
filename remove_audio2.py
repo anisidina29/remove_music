@@ -27,7 +27,7 @@ def process_video(video_path, output_dir, final_output_dir):
     shutil.move(output_video_path, final_video_path)
 
     # Xóa video tạm thời
-    os.remove(temp_video_path)
+    # os.remove(temp_video_path)
     os.remove(video_path)
 
 if __name__ == "__main__":

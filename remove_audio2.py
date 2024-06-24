@@ -22,16 +22,23 @@ def process_video(video_path, output_dir, final_output_dir):
     output_video_path = f"{video_path[0:-4]}_without_music.mp4"
     subprocess.run(f"ffmpeg -i \"{temp_video_path}\" -i \"{vocals_path}\" -c:v copy -c:a aac -strict experimental \"{output_video_path}\"", shell=True, check=True)
 
+    # Kiểm tra nếu video_path chứa "without music"
+    if "without music" in video_path:
+        temp_dir = os.path.join(final_output_dir, "temp")
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
+        shutil.move(temp_video_path, temp_dir)
+    else:
+        os.remove(temp_video_path)
+
     # Di chuyển video đã xử lý vào thư mục cuối cùng
     final_video_path = os.path.join(final_output_dir, os.path.basename(video_path).replace(".mp4", "_without_music.mp4"))
     shutil.move(output_video_path, final_video_path)
 
-    # Xóa video tạm thời
-    # os.remove(temp_video_path)
+    # Xóa video gốc
     os.remove(video_path)
 
 if __name__ == "__main__":
-
     output_directory = "demucs_output"  # Thư mục lưu kết quả xử lý
     final_output_directory = "videos_without_music"  # Thư mục chứa video sau khi xử lý
     input_dir = "videos"
@@ -42,8 +49,6 @@ if __name__ == "__main__":
         os.makedirs(final_output_directory)
       
     for file_name in os.listdir(input_dir):
-      if file_name.endswith(".mp4"):
-          video_path = os.path.join(input_dir, file_name)
-          process_video(video_path, output_directory, final_output_directory)
-
-      
+        if file_name.endswith(".mp4"):
+            video_path = os.path.join(input_dir, file_name)
+            process_video(video_path, output_directory, final_output_directory)

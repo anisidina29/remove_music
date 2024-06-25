@@ -1,0 +1,57 @@
+
+name: convert video to 60 fps
+
+on:
+  workflow_dispatch:
+  #schedule:
+   # - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
+
+jobs:
+  remove_audio:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+ 
+           
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+    
+      - name: Update and upgrade packages
+        run: sudo apt-get update && sudo apt-get upgrade -y
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y ffmpeg
+          pip install demucs
+          pip install gdown
+          pip install --upgrade gdown
+
+      - name: Create user folders
+        run: mkdir -p $GITHUB_WORKSPACE/videos
+
+      - name: Download video
+        run: gdown --folder https://drive.google.com/drive/folders/1Er97HoDjK2n3tLdbSmBk2OJx_e_x3ODZ?usp=sharing -O $GITHUB_WORKSPACE/videos
+
+      - name: Create output directory
+        run: mkdir -p $GITHUB_WORKSPACE/videos_without_music
+
+      - name: Run ffmpeg 
+        run: ffmpeg -i videos/VID20240612122716.mp4 -r 60 -c:v libx264 -crf 14 -preset slow -c:a copy videos_without_music/VID202406121227163.mp4
+      
+      - name: show in4 video
+        run: ffprobe -v error -show_entries format=duration:stream=codec_name,codec_type,width,height,r_frame_rate -of default=noprint_wrappers=1 videos_without_music/VID202406121227163.mp4
+      
+      - name: Archive processed videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: video60fps
+          path: videos_without_music
+

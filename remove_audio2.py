@@ -3,6 +3,30 @@ import subprocess
 import shutil
 import sys
 
+def split_large_video(video_path):
+    # Kiểm tra kích thước tệp
+    file_size = os.path.getsize(video_path)
+    if file_size > 1 * 1024 * 1024 * 1024:  # 1GB
+        # Tạo tên tệp cho các phần video
+        part1_path = video_path.replace(".mp4", "_part1.mp4")
+        part2_path = video_path.replace(".mp4", "_part2.mp4")
+        
+        # Cắt video ra làm 2 phần
+        duration = subprocess.check_output(f"ffmpeg -i \"{video_path}\" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//", shell=True).decode("utf-8").strip()
+        total_seconds = sum(x * int(t) for x, t in zip([3600, 60, 1], duration.split(":")))
+        half_duration = total_seconds // 2
+
+        # Cắt phần 1
+        subprocess.run(f"ffmpeg -i \"{video_path}\" -t {half_duration} -c copy \"{part1_path}\"", shell=True, check=True)
+        # Cắt phần 2
+        subprocess.run(f"ffmpeg -i \"{video_path}\" -ss {half_duration} -c copy \"{part2_path}\"", shell=True, check=True)
+
+        # Xóa video gốc
+        os.remove(video_path)
+
+        return [part1_path, part2_path]
+    return [video_path]
+
 def process_video(video_path, output_dir, final_output_dir):
     print(f"Processing video: {video_path}")
     # Tách âm thanh bằng demucs
@@ -51,4 +75,6 @@ if __name__ == "__main__":
     for file_name in os.listdir(input_dir):
         if file_name.endswith(".mp4"):
             video_path = os.path.join(input_dir, file_name)
-            process_video(video_path, output_directory, final_output_directory)
+            video_parts = split_large_video(video_path)
+            for part in video_parts:
+                process_video(part, output_directory, final_output_directory)

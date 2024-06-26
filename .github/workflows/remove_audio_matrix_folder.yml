@@ -2,8 +2,8 @@ name: Remove Audio 2
 
 on:
   workflow_dispatch:
-  #schedule:
-   # - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
+  schedule:
+   - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
 
 jobs:
   remove_audio:

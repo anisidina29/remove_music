@@ -1,0 +1,88 @@
+name: Remove Audio 10 18
+
+on:
+  workflow_dispatch:
+  schedule:
+   - cron: '0 19,1,7 * * *' # 2 AM Vietnam time
+
+jobs:
+  remove_audio:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    strategy:
+      matrix:
+        link:
+          - index: 10
+            url: "https://drive.google.com/drive/folders/18n_dkZXDkdxfkaiHDJbAGnFhfRCAziKC?usp=sharing"
+          - index: 11
+            url: "https://drive.google.com/drive/folders/1SUV2lwwVYUluFbIpqAfxlWN0xEBDGeMd?usp=sharing"
+          - index: 12
+            url: "https://drive.google.com/drive/folders/1z7ttMcqIXwhkIY0NhBAIC2YHbVJ768b6?usp=sharing"
+          - index: 13
+            url: "https://drive.google.com/drive/folders/1LISvqN1DssiOw8MKrT69E32mG8y3Yruu?usp=sharing"
+          - index: 14
+            url: "https://drive.google.com/drive/folders/1QwDRNVKan9t78HjZEgq7YsWWTcB96Kq1?usp=sharing"
+          - index: 15
+            url: "https://drive.google.com/drive/folders/1QfVpQmcnSxRoyjDaiTxBRVqDv3oOvepn?usp=sharing"
+          - index: 16
+            url: "https://drive.google.com/drive/folders/1sU4s1xN_Ry1BNrrrYeNHTGs15Ul8P1O6?usp=sharing"
+          - index: 17
+            url: "https://drive.google.com/drive/folders/1cRh1Gzh1mmuWS8d0e6jeDGAJwA5LEGVs?usp=sharing"
+          - index: 18
+            url: "https://drive.google.com/drive/folders/1cRh1Gzh1mmuWS8d0e6jeDGAJwA5LEGVs?usp=sharing"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Print date and time
+        run: echo "Workflow started at $(TZ='Asia/Ho_Chi_Minh' date)"
+
+      - name: Update and upgrade packages
+        run: sudo apt-get update && sudo apt-get upgrade -y
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y ffmpeg
+          pip install demucs
+          pip install gdown
+          pip install --upgrade gdown
+
+      - name: Create user folders
+        run: mkdir -p $GITHUB_WORKSPACE/videos
+
+      - name: Download video
+        run: gdown --folder ${{ matrix.link.url }} -O $GITHUB_WORKSPACE/videos
+
+      - name: Create output directory
+        run: mkdir -p $GITHUB_WORKSPACE/videos_without_music
+
+      - name: Run Python script
+        run: python remove_audio2.py
+
+      - name: Extract substring from URL
+        id: extract_substring
+        run: |
+          url="${{ matrix.link.url }}"
+          substring=${url:44:7}
+          echo "SUBSTRING=$substring" >> $GITHUB_ENV
+
+      - name: Archive processed videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.link.index }}
+          path: videos_without_music
+
+      - name: Archive processed videos no audio
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.link.index }}noaudio
+          path: videos

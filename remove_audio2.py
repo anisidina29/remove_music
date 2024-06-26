@@ -13,8 +13,9 @@ def split_large_video(video_path):
         
         # Cắt video ra làm 2 phần
         duration = subprocess.check_output(f"ffmpeg -i \"{video_path}\" 2>&1 | grep 'Duration' | cut -d ' ' -f 4 | sed s/,//", shell=True).decode("utf-8").strip()
-        total_seconds = sum(x * int(t) for x, t in zip([3600, 60, 1], duration.split(":")))
-        half_duration = total_seconds // 2
+        h, m, s = duration.split(":")
+        total_seconds = int(h) * 3600 + int(m) * 60 + float(s)
+        half_duration = total_seconds / 2
 
         # Cắt phần 1
         subprocess.run(f"ffmpeg -i \"{video_path}\" -t {half_duration} -c copy \"{part1_path}\"", shell=True, check=True)

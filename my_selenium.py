@@ -102,7 +102,7 @@ if __name__ == "__main__":
     elements = elements * 7
 
     # Số lượng process muốn tạo, có thể sử dụng multiprocessing.cpu_count() để lấy số lượng core CPU
-    num_processes = multiprocessing.cpu_count() - 1
+    num_processes = multiprocessing.cpu_count() - 2
 
     # Tạo và khởi chạy các process
     processes = []

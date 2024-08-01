@@ -26,6 +26,14 @@ def run_thread(keyword):
         watch_video = driver.find_element(By.XPATH, '//a[@id="video-title" and contains(text(), "{}")]'.format(keyword))
         watch_video.click()
         time.sleep(10)
+        xpath = '//button[@aria-label="Loop playlist"]'
+
+        # Find the button element by XPath
+        element = driver.find_element(By.XPATH, xpath)
+
+        # Click the button using JavaScript
+        driver.execute_script("arguments[0].click();", element)
+
 
         while True:
             driver.save_screenshot("screenshot_{}_{}.png".format(keyword, time.time()))
@@ -40,6 +48,14 @@ def run_thread(keyword):
         watch_video = driver.find_element(By.XPATH, '//a[@id="video-title" and contains(text(), "{}")]'.format(keyword))
         watch_video.click()
         time.sleep(10)
+        xpath = '//button[@aria-label="Loop playlist"]'
+
+        # Find the button element by XPath
+        element = driver.find_element(By.XPATH, xpath)
+
+        # Click the button using JavaScript
+        driver.execute_script("arguments[0].click();", element)
+
 
         while True:
             driver.save_screenshot("screenshot_{}_{}.png".format(keyword, time.time()))
@@ -79,7 +95,7 @@ if __name__ == "__main__":
     elements = ["honguynvn04", "hieuvilai2007"]
     elements = elements * 600  # Lặp lại các phần tử để tạo danh sách dài hơn
 
-    num_processes = multiprocessing.cpu_count() - 2
+    num_processes = multiprocessing.cpu_count() - 1
     processes = []
     for i in range(num_processes):
         process = multiprocessing.Process(target=run_process, args=(elements,))

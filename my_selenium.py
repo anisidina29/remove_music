@@ -99,7 +99,7 @@ def run_process(elements):
 if __name__ == "__main__":
     # List các elements bạn muốn xử lý
     elements = ["honguynvn04","hieuvilai2007"]
-    elements = elements * 7
+    
 
     # Số lượng process muốn tạo, có thể sử dụng multiprocessing.cpu_count() để lấy số lượng core CPU
     num_processes = multiprocessing.cpu_count() - 2

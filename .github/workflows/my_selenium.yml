@@ -1,14 +1,16 @@
-name:My Selenium
+name: My Selenium
 
 on:
   workflow_dispatch:
- 
+
+jobs:
   youtube_bot:
     continue-on-error: true
     strategy:
       matrix:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,7 +21,8 @@ on:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install selenium psutil
+        run: |
+          pip install selenium psutil
 
       - name: Run Selenium script
         run: python my_selenium.py 
@@ -28,5 +31,5 @@ on:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: screenshots-${{ matrix.os }}-${{ matrix.python-version }}
+          name: screenshots-${{ github.run_id }}
           path: screenshots/

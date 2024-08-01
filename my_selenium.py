@@ -4,6 +4,13 @@ from selenium.webdriver.common.by import By
 import time
 import threading
 import multiprocessing
+import psutil
+
+def cpu_usage():
+    cpu_usage = psutil.cpu_percent(interval=1)
+    ram_usage = psutil.virtual_memory().percent
+    print("cpu_usage: ", cpu_usage)
+    print("ram_usage: ", ram_usage)
 
 def run_thread(keyword):
     driver = webdriver.Chrome()
@@ -39,6 +46,7 @@ def run_thread(keyword):
             # Chụp ảnh màn hình
             driver.save_screenshot("screenshot_{}_{}.png".format(keyword, time.time()))
             print("Screenshot taken for keyword: {}".format(keyword))
+            cpu_usage()
 
             # Chờ 10 phút trước khi chụp ảnh màn hình tiếp theo
             time.sleep(300)
@@ -66,6 +74,7 @@ def run_thread(keyword):
             # Chụp ảnh màn hình
             driver.save_screenshot("screenshot_{}_{}.png".format(keyword, time.time()))
             print("Screenshot taken for keyword: {}".format(keyword))
+            cpu_usage()
 
             # Chờ 10 phút trước khi chụp ảnh màn hình tiếp theo
             time.sleep(300)

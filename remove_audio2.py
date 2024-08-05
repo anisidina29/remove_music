@@ -6,7 +6,7 @@ import sys
 def split_large_video(video_path):
     # Kiểm tra kích thước tệp
     file_size = os.path.getsize(video_path)
-    if file_size > 1 * 1024 * 1024 * 1024:  # 1GB
+    if file_size > 0.1 * 1024 * 1024 * 1024:  # 1GB
         # Tạo tên tệp cho các phần video
         part1_path = video_path.replace(".mp4", "_part1.mp4")
         part2_path = video_path.replace(".mp4", "_part2.mp4")

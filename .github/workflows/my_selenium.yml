@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install selenium psutil
+          pip install selenium chromedriver_autoinstaller
 
       - name: Run Selenium script
         run: python my_selenium.py 

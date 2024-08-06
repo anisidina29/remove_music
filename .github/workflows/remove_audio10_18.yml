@@ -104,7 +104,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install selenium psutil
+        run: pip install selenium chromedriver_autoinstaller
 
       - name: Run Selenium script
         run: python my_selenium.py 

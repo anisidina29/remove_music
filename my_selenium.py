@@ -58,7 +58,7 @@ def run_thread(links, thread_id):
     drivers = []
     
     for i in range(DRIVERS):
-        drivers.append(create_driver())
+        drivers.append(create_driver(user_agents[i]))
         drivers[i].get(links[i])
         perform_human_like_actions(drivers[i])
     
@@ -91,7 +91,7 @@ def main():
     driver.implicitly_wait(10)  # Implicit wait to ensure elements are loaded
     
     links = []
-    while len(links) < 500:
+    while len(links) < 200:
         elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
         new_links = [element.get_attribute('href') for element in elements]
         links.extend([link for link in new_links if link not in links])  # Avoid duplicates

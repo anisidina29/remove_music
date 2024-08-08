@@ -20,7 +20,7 @@ def create_driver(user_agent):
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--headless")  # Run in headless mode
+    #chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument(f"user-agent={user_agent}")
     driver = webdriver.Chrome(options=chrome_options)
     return driver

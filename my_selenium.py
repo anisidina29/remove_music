@@ -20,6 +20,7 @@ def create_driver(user_agent):
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument(f"user-agent={user_agent}")
     driver = webdriver.Chrome(options=chrome_options)
     return driver
@@ -43,10 +44,10 @@ def perform_human_like_actions(driver, element):
     actions.move_by_offset(-offset_x, -offset_y).perform()
 
 def run_thread(links, thread_id):
-    DRIVERS = len(links)
+    MAX_DRIVERS = 5  # Reduce the number of drivers per thread
     drivers = []
 
-    for i in range(DRIVERS):
+    for i in range(min(len(links), MAX_DRIVERS)):
         driver = create_driver(user_agents[i % len(user_agents)])
         drivers.append(driver)
         try:
@@ -61,7 +62,7 @@ def run_thread(links, thread_id):
     while time.time() - start_time < run_time:
         sleep_time = random.randint(60, 300)
         time.sleep(sleep_time)
-        for j in range(DRIVERS):
+        for j in range(len(drivers)):
             try:
                 sleep_time = random.randint(1, 10)
                 time.sleep(sleep_time)
@@ -91,7 +92,7 @@ def main():
     
     driver.quit()
     
-    chunk_size = 10
+    chunk_size = 5  # Adjust chunk size to reduce load
     chunks = [links[i:i + chunk_size] for i in range(0, len(links), chunk_size)]
     
     threads = []
@@ -101,7 +102,7 @@ def main():
         random_delay(60, 300)
         thread.start()
 
-        if len(threads) >= 10:
+        if len(threads) >= 5:  # Reduce the number of concurrent threads
             for t in threads:
                 t.join()
             threads = []

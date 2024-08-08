@@ -3,12 +3,11 @@ import threading
 import random
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+import chromedriver_autoinstaller
 
 # Automatically install the ChromeDriver and get its path
-import chromedriver_autoinstaller
 chromedriver_autoinstaller.install()
 
 user_agents = [
@@ -19,11 +18,9 @@ user_agents = [
 
 def create_driver(user_agent):
     chrome_options = Options()
-    #chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument(f"user-agent={user_agent}")
-    
     driver = webdriver.Chrome(options=chrome_options)
     return driver
 
@@ -37,67 +34,59 @@ def random_delay(min_seconds=1, max_seconds=5):
 
 def perform_human_like_actions(driver, element):
     actions = ActionChains(driver)
-    
-    # Hover over the element before clicking
     actions.move_to_element(element).perform()
     random_delay(0.5, 1.0)
-    
-    # Generate random offset within element boundaries
     offset_x = random.randint(-element.size['width'] // 4, element.size['width'] // 4)
     offset_y = random.randint(-element.size['height'] // 4, element.size['height'] // 4)
-    
-    # Move to a random position within the element
     actions.move_by_offset(offset_x, offset_y).click().perform()
     print(f"Clicked at offset ({offset_x}, {offset_y})")
-    
-    # Reset the offset
     actions.move_by_offset(-offset_x, -offset_y).perform()
 
 def run_thread(links, thread_id):
-    DRIVERS = 3
+    DRIVERS = len(links)
     drivers = []
-    
-    for i in range(DRIVERS):
-        drivers.append(create_driver(user_agents[i]))
-        drivers[i].get(links[i])
-        perform_human_like_actions(drivers[i])
-    
-    # Determine the random run time in seconds (between 3 and 30 minutes)
-    run_time = random.randint(600, 1800)  # 180 seconds to 1800 seconds (3 to 30 minutes)
-    start_time = time.time()
-    
-    while time.time() - start_time < run_time:
-        # Sleep for a random amount of time between 1 and 5 minutes
-        sleep_time = random.randint(60, 300)  # 60 seconds to 300 seconds (1 to 5 minutes)
-        time.sleep(sleep_time)
-        
-        for j in range(DRIVERS):
-            sleep_time = random.randint(1, 10)  # 60 seconds to 300 seconds (1 to 5 minutes)
-            time.sleep(sleep_time)
-            drivers[j].refresh()
-            perform_human_like_actions(drivers[j])
-            drivers[j].save_screenshot(f"screenshot_{thread_id}_{time.time()}.png")
-            print(f"Screenshot taken for URL {links[j]} by thread {thread_id}")
 
-    # Close all driver instances
+    for i in range(DRIVERS):
+        driver = create_driver(user_agents[i % len(user_agents)])
+        drivers.append(driver)
+        try:
+            driver.get(links[i])
+            perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))  # Adjust based on actual elements
+        except Exception as e:
+            print(f"Error with driver {i}: {e}")
+
+    run_time = random.randint(600, 1800)
+    start_time = time.time()
+
+    while time.time() - start_time < run_time:
+        sleep_time = random.randint(60, 300)
+        time.sleep(sleep_time)
+        for j in range(DRIVERS):
+            try:
+                sleep_time = random.randint(1, 10)
+                time.sleep(sleep_time)
+                drivers[j].refresh()
+                perform_human_like_actions(drivers[j], drivers[j].find_element(By.XPATH, '//body'))  # Adjust based on actual elements
+                drivers[j].save_screenshot(f"screenshot_{thread_id}_{time.time()}.png")
+                print(f"Screenshot taken for URL {links[j]} by thread {thread_id}")
+            except Exception as e:
+                print(f"Error with driver {j}: {e}")
+
     for drv in drivers:
         drv.quit()
-        
-        
+
 def main():
     user_agent = random.choice(user_agents)
     driver = create_driver(user_agent)
     driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
-    driver.implicitly_wait(10)  # Implicit wait to ensure elements are loaded
+    driver.implicitly_wait(10)
     
     links = []
     while len(links) < 200:
         elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
         new_links = [element.get_attribute('href') for element in elements]
-        links.extend([link for link in new_links if link not in links])  # Avoid duplicates
-        
+        links.extend([link for link in new_links if link not in links])
         print(f"Number of unique links: {len(links)}")
-        
         scroll_down(driver)
     
     driver.quit()
@@ -109,9 +98,9 @@ def main():
     for i, chunk in enumerate(chunks):
         thread = threading.Thread(target=run_thread, args=(chunk, i))
         threads.append(thread)
-        random_delay(60, 300)  # Random delay before starting new thread
+        random_delay(60, 300)
         thread.start()
-        
+
         if len(threads) >= 10:
             for t in threads:
                 t.join()

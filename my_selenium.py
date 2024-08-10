@@ -1,11 +1,13 @@
 import time
 import threading
 import random
+import platform  # Import platform module
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import chromedriver_autoinstaller
+from random import shuffle
 
 # Automatically install the ChromeDriver and get its path
 chromedriver_autoinstaller.install()
@@ -20,7 +22,11 @@ def create_driver(user_agent):
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    #chrome_options.add_argument("--headless")  # Run in headless mode
+    
+    # Check if the OS is Ubuntu and enable headless mode if true
+    if platform.system() == 'Linux' and 'ubuntu' in platform.version().lower():
+        chrome_options.add_argument("--headless")
+
     chrome_options.add_argument(f"user-agent={user_agent}")
     driver = webdriver.Chrome(options=chrome_options)
     return driver
@@ -91,6 +97,9 @@ def main():
         scroll_down(driver)
     
     driver.quit()
+
+    # Shuffle the links to randomize their order
+    shuffle(links)
     
     chunk_size = 5  # Adjust chunk size to reduce load
     chunks = [links[i:i + chunk_size] for i in range(0, len(links), chunk_size)]

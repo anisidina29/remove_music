@@ -92,7 +92,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        os: [macos-latest, windows-2019, windows-latest, windows-2022,windows-2019, windows-latest, windows-2022,windows-2019, windows-latest, windows-2022,windows-2019, windows-latest, windows-2022,windows-2019, windows-latest]
+        os: [macos-latest, windows-2019, ubuntu-latest, ubuntu-latest,ubuntu-latest, windows-latest,ubuntu-latest,ubuntu-latest, windows-latest, windows-2022,windows-2019, windows-latest, windows-2022,windows-2019, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code

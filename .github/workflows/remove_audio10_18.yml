@@ -87,31 +87,31 @@ jobs:
           name: ${{ matrix.link.index }}noaudio
           path: videos
   
-  youtube_bot:
-    needs: remove_audio # Chạy sau khi remove_audio hoàn tất
-    continue-on-error: true
-    strategy:
-      matrix:
-        os: [macos-latest, windows-2019, ubuntu-latest, ubuntu-latest,ubuntu-latest, windows-latest,ubuntu-latest,ubuntu-latest, windows-latest, windows-2022,windows-2019, windows-latest, windows-2022,windows-2019, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # youtube_bot:
+  #   needs: remove_audio # Chạy sau khi remove_audio hoàn tất
+  #   continue-on-error: true
+  #   strategy:
+  #     matrix:
+  #       os: [macos-latest, windows-2019, ubuntu-latest, ubuntu-latest,ubuntu-latest, windows-latest,ubuntu-latest,ubuntu-latest, windows-latest, windows-2022,windows-2019, windows-latest, windows-2022,windows-2019, windows-latest]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install selenium chromedriver_autoinstaller
+  #     - name: Install dependencies
+  #       run: pip install selenium chromedriver_autoinstaller
 
-      - name: Run Selenium script
-        run: python my_selenium.py 
+  #     - name: Run Selenium script
+  #       run: python my_selenium.py 
 
-      - name: Archive screenshots
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: screenshots-${{ matrix.os }}-${{ matrix.python-version }}
-          path: screenshots/
+  #     - name: Archive screenshots
+  #       uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with:
+  #         name: screenshots-${{ matrix.os }}-${{ matrix.python-version }}
+  #         path: screenshots/

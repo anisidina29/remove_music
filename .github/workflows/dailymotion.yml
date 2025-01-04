@@ -32,4 +32,4 @@ jobs:
         if: always()
         with:
           name: screenshots-${{ github.run_id }}
-          path: /
+          path: screenshots/

@@ -8,9 +8,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import chromedriver_autoinstaller
 from random import shuffle
+import os
 
 # Automatically install the ChromeDriver and get its path
 chromedriver_autoinstaller.install()
+
+output_dir = 'screenshots/'
+os.makedirs(output_dir, exist_ok=True)
 
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
@@ -23,5 +27,5 @@ driver = webdriver.Chrome(options=chrome_options)
 driver.get("https://www.dailymotion.com/playlist/x977b6")
 while True:
   time.sleep(60)
-  driver.save_screenshot(f"screenshot_{time.time()}.png")
+  driver.save_screenshot(f"screenshots/screenshot_{time.time()}.png")
 

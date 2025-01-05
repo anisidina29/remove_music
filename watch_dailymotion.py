@@ -63,8 +63,8 @@ def run_chrome_instance(instance_id):
     driver.get("https://www.dailymotion.com/playlist/x977b6")
     
     # Lấy kích thước của viewport
-    viewport_width = driver.execute_script("return window.innerWidth")
-    viewport_height = driver.execute_script("return window.innerHeight")
+    viewport_width = driver.execute_script("return int(window.innerWidth /2)")
+    viewport_height = driver.execute_script("return int(window.innerHeight/ 2)")
     
     # Khởi tạo ActionChains
     action = ActionChains(driver)

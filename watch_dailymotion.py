@@ -77,8 +77,9 @@ def run_chrome_instance(instance_id):
     driver.maximize_window()
 
     try:
-        driver.set_page_load_timeout(120)  # Increased page load timeout
-        driver.implicitly_wait(10)  # Explicitly set implicit wait to 10 seconds
+        driver.set_page_load_timeout(120)  # Increase the page load timeout
+        driver.set_script_timeout(120)  # Set script timeout
+        driver.implicitly_wait(10)  # Set implicit wait
 
         driver.get("https://www.dailymotion.com/playlist/x977b6")
     except TimeoutException as e:

@@ -29,6 +29,23 @@
 #   time.sleep(60)
 #   driver.save_screenshot(f"screenshots/screenshot_{time.time()}.png")
 
+import time
+import random
+import platform
+import threading  # Import threading
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+import chromedriver_autoinstaller
+import os
+
+# Automatically install the ChromeDriver and get its path
+chromedriver_autoinstaller.install()
+
+output_dir = 'screenshots/'
+os.makedirs(output_dir, exist_ok=True)
+
 # Hàm để chạy một instance của trình duyệt Chrome
 def run_chrome_instance(instance_id):
     chrome_options = Options()

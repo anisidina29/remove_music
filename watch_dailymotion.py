@@ -93,7 +93,7 @@ def run_chrome_instance(instance_id):
         driver.save_screenshot(f"{output_dir}/screenshot_{instance_id}_{time.time()}.png")
 
 # Số lượng threads (trình duyệt Chrome) cần mở
-num_threads = 5
+num_threads = 3
 
 # Khởi tạo và chạy nhiều threads
 threads = []

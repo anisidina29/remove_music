@@ -58,6 +58,8 @@ def run_chrome_instance(instance_id):
     
     # Mở Chrome
     driver = webdriver.Chrome(options=chrome_options)
+    # Tối đa hóa cửa sổ
+    driver.maximize_window()
     driver.get("https://www.dailymotion.com/playlist/x977b6")
     
     # Lấy kích thước của viewport
@@ -69,8 +71,8 @@ def run_chrome_instance(instance_id):
     
     while True:
         # Di chuyển chuột ngẫu nhiên
-        random_x = random.randint(0, viewport_width)
-        random_y = random.randint(0, viewport_height)
+        random_x = random.randint(0, viewport_width - 5)
+        random_y = random.randint(0, viewport_height - 5)
         action.move_by_offset(random_x, random_y).perform()  # Di chuyển chuột
         time.sleep(random.uniform(1, 3))  # Thời gian di chuyển ngẫu nhiên
 

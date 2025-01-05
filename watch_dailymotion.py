@@ -46,6 +46,19 @@ chromedriver_autoinstaller.install()
 output_dir = 'screenshots/'
 os.makedirs(output_dir, exist_ok=True)
 
+def random_delay(min_seconds=1, max_seconds=5):
+    time.sleep(random.uniform(min_seconds, max_seconds))
+
+def perform_human_like_actions(driver, element):
+    actions = ActionChains(driver)
+    actions.move_to_element(element).perform()
+    random_delay(0.5, 1.0)
+    offset_x = random.randint(-element.size['width'] // 4, element.size['width'] // 4)
+    offset_y = random.randint(-element.size['height'] // 4, element.size['height'] // 4)
+    actions.move_by_offset(offset_x, offset_y).click().perform()
+    print(f"Clicked at offset ({offset_x}, {offset_y})")
+    actions.move_by_offset(-offset_x, -offset_y).perform()
+
 # Hàm để chạy một instance của trình duyệt Chrome
 def run_chrome_instance(instance_id):
     chrome_options = Options()
@@ -67,24 +80,10 @@ def run_chrome_instance(instance_id):
         print(f"Error: Page load timed out for instance {instance_id}. Retrying...")
         driver.quit()
         return  # Exit and allow retry or further error handling
-    
-    # Lấy kích thước của viewport
-    viewport_width = driver.execute_script("return parseInt(window.innerWidth / 2, 10)")
-    viewport_height = driver.execute_script("return parseInt(window.innerHeight / 2, 10)")
-    
-    # Khởi tạo ActionChains
-    action = ActionChains(driver)
+
     
     while True:
-        # Di chuyển chuột ngẫu nhiên
-        random_x = random.randint(0, viewport_width - 5)
-        random_y = random.randint(0, viewport_height - 5)
-        action.move_by_offset(random_x, random_y).perform()  # Di chuyển chuột
-        time.sleep(random.uniform(1, 3))  # Thời gian di chuyển ngẫu nhiên
-
-        # Di chuyển chuột đến một vị trí khác mỗi phút
-        action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), random_x, random_y).perform()
-
+        perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))
         # Chụp ảnh mỗi 60 giây
         time.sleep(60)
         driver.save_screenshot(f"{output_dir}/screenshot_{instance_id}_{time.time()}.png")

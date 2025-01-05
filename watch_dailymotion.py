@@ -108,7 +108,7 @@ num_threads = 4
 
 # Khởi tạo và chạy nhiều threads cho các trình duyệt khác nhau
 threads = []
-browser_types = ['chrome', 'edge','chrome', 'edge']
+browser_types = ['chrome', 'chrome','chrome', 'chrome','chrome']
 
 for i in range(num_threads):
     browser_type = browser_types[i % len(browser_types)]  # Alternate browsers

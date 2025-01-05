@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install selenium chromedriver_autoinstaller
+          pip install selenium chromedriver_autoinstaller geckodriver-autoinstaller msedge-selenium-tools
 
       - name: Run Selenium script
         run: python watch_dailymotion.py 

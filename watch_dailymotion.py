@@ -72,18 +72,19 @@ def run_chrome_instance(instance_id):
     if platform.system() == 'Linux' and 'ubuntu' in platform.version().lower():
         chrome_options.add_argument("--headless")
     
-    # Mở Chrome
+    # Open Chrome
     driver = webdriver.Chrome(options=chrome_options)
-    # Tối đa hóa cửa sổ
     driver.maximize_window()
+
     try:
         driver.set_page_load_timeout(120)  # Increased page load timeout
+        driver.implicitly_wait(10)  # Explicitly set implicit wait to 10 seconds
+
         driver.get("https://www.dailymotion.com/playlist/x977b6")
     except TimeoutException as e:
         print(f"Error: Page load timed out for instance {instance_id}. Retrying...")
         driver.quit()
-        return  # Exit and allow retry or further error handling
-
+        return  
     
     while True:
         perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))

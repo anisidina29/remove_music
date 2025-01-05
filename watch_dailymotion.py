@@ -69,8 +69,8 @@ def run_chrome_instance(instance_id):
         return  # Exit and allow retry or further error handling
     
     # Lấy kích thước của viewport
-    viewport_width = driver.execute_script("return int(window.innerWidth /2)")
-    viewport_height = driver.execute_script("return int(window.innerHeight/ 2)")
+    viewport_width = driver.execute_script("return parseInt(window.innerWidth / 2, 10)")
+    viewport_height = driver.execute_script("return parseInt(wwindow.innerHeight / 2, 10)")
     
     # Khởi tạo ActionChains
     action = ActionChains(driver)

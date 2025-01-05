@@ -79,9 +79,7 @@ def run_browser_instance(instance_id, browser_type='chrome'):
         firefox_options.headless = False
         driver = webdriver.Firefox(options=firefox_options)
     elif browser_type == 'edge':
-        edge_options = EdgeOptions()
-        edge_options.add_argument("--no-sandbox")
-        driver = webdriver.Edge(options=edge_options)
+        driver = webdriver.Edge()
     else:
         raise ValueError("Unsupported browser type")
 

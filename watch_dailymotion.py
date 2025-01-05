@@ -60,7 +60,13 @@ def run_chrome_instance(instance_id):
     driver = webdriver.Chrome(options=chrome_options)
     # Tối đa hóa cửa sổ
     driver.maximize_window()
-    driver.get("https://www.dailymotion.com/playlist/x977b6")
+    try:
+        driver.set_page_load_timeout(120)  # Increased page load timeout
+        driver.get("https://www.dailymotion.com/playlist/x977b6")
+    except TimeoutException as e:
+        print(f"Error: Page load timed out for instance {instance_id}. Retrying...")
+        driver.quit()
+        return  # Exit and allow retry or further error handling
     
     # Lấy kích thước của viewport
     viewport_width = driver.execute_script("return int(window.innerWidth /2)")
@@ -84,7 +90,7 @@ def run_chrome_instance(instance_id):
         driver.save_screenshot(f"{output_dir}/screenshot_{instance_id}_{time.time()}.png")
 
 # Số lượng threads (trình duyệt Chrome) cần mở
-num_threads = 5
+num_threads = 3
 
 # Khởi tạo và chạy nhiều threads
 threads = []

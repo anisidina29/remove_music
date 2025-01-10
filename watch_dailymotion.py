@@ -76,19 +76,28 @@ def run_chrome_instance(instance_id):
     action = ActionChains(driver)
 
     while True:
-        # Di chuyển chuột ngẫu nhiên
+    try:
+        # Generate random mouse movement coordinates within the viewport
         random_x = random.randint(0, viewport_width - 5)
         random_y = random.randint(0, viewport_height - 5)
-        action.move_by_offset(random_x, random_y).perform()  # Di chuyển chuột
-        time.sleep(random.uniform(1, 3))  # Thời gian di chuyển ngẫu nhiên
-        # Di chuyển chuột đến một vị trí khác mỗi phút
+
+        # Move the mouse by the offset calculated
+        action.move_by_offset(random_x, random_y).perform()
+        time.sleep(random.uniform(1, 3))  # Random delay between mouse moves
+
+        # Move the mouse to a new random position on the 'body' element
         action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), random_x, random_y).perform()
-        # Chụp ảnh mỗi 60 giây
-        time.sleep(60)
-        driver.save_screenshot(f"{output_dir}/screenshot_{instance_id}_{time.time()}.png")
+    except selenium.common.exceptions.MoveTargetOutOfBoundsException:
+        print("Attempted to move the mouse out of bounds. Adjusting position.")
+        # Reset the ActionChains to clear out any pending actions that might have failed
+        action.reset_actions()
+        # Optionally, recenter the mouse or handle the error in a way that makes sense for your context
+        action.move_to_element(driver.find_element(By.TAG_NAME, 'body')).perform()
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 # Số lượng threads (trình duyệt Chrome) cần mở
-num_threads = 3
+num_threads = 5
 
 # Khởi tạo và chạy nhiều threads
 threads = []

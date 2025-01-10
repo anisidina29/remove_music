@@ -39,6 +39,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import chromedriver_autoinstaller
 import os
+from selenium.common.exceptions import MoveTargetOutOfBoundsException, TimeoutException
 
 # Automatically install the ChromeDriver and get its path
 chromedriver_autoinstaller.install()
@@ -87,7 +88,7 @@ def run_chrome_instance(instance_id):
     
             # Move the mouse to a new random position on the 'body' element
             action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), random_x, random_y).perform()
-        except selenium.common.exceptions.MoveTargetOutOfBoundsException:
+        except MoveTargetOutOfBoundsException:
             print("Attempted to move the mouse out of bounds. Adjusting position.")
             # Reset the ActionChains to clear out any pending actions that might have failed
             action.reset_actions()

@@ -75,32 +75,32 @@ def run_chrome_instance(instance_id):
     # Khởi tạo ActionChains
     action = ActionChains(driver)
 
-while True:
-    try:
-        # Generate random mouse movement coordinates within the viewport
-        random_x = random.randint(0, viewport_width - 5)
-        random_y = random.randint(0, viewport_height - 5)
-
-        # Move the mouse by the offset calculated
-        action.move_by_offset(random_x, random_y).perform()
-        time.sleep(random.uniform(1, 3))  # Random delay between mouse moves
-
-        # Move the mouse to a new random position on the 'body' element
-        action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), random_x, random_y).perform()
-    except selenium.common.exceptions.MoveTargetOutOfBoundsException:
-        print("Attempted to move the mouse out of bounds. Adjusting position.")
-        # Reset the ActionChains to clear out any pending actions that might have failed
-        action.reset_actions()
-        # Optionally, recenter the mouse or handle the error in a way that makes sense for your context
-        action.move_to_element(driver.find_element(By.TAG_NAME, 'body')).perform()
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
-    # Screenshot interval
-    time.sleep(60)
-    screenshot_filename = f"{output_dir}/screenshot_{instance_id}_{time.time()}.png"
-    driver.save_screenshot(screenshot_filename)
-    print(f"Saved screenshot to {screenshot_filename}")
+    while True:
+        try:
+            # Generate random mouse movement coordinates within the viewport
+            random_x = random.randint(0, viewport_width - 5)
+            random_y = random.randint(0, viewport_height - 5)
+    
+            # Move the mouse by the offset calculated
+            action.move_by_offset(random_x, random_y).perform()
+            time.sleep(random.uniform(1, 3))  # Random delay between mouse moves
+    
+            # Move the mouse to a new random position on the 'body' element
+            action.move_to_element_with_offset(driver.find_element(By.TAG_NAME, 'body'), random_x, random_y).perform()
+        except selenium.common.exceptions.MoveTargetOutOfBoundsException:
+            print("Attempted to move the mouse out of bounds. Adjusting position.")
+            # Reset the ActionChains to clear out any pending actions that might have failed
+            action.reset_actions()
+            # Optionally, recenter the mouse or handle the error in a way that makes sense for your context
+            action.move_to_element(driver.find_element(By.TAG_NAME, 'body')).perform()
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+    
+        # Screenshot interval
+        time.sleep(60)
+        screenshot_filename = f"{output_dir}/screenshot_{instance_id}_{time.time()}.png"
+        driver.save_screenshot(screenshot_filename)
+        print(f"Saved screenshot to {screenshot_filename}")
 
 
 

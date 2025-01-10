@@ -75,7 +75,7 @@ def run_chrome_instance(instance_id):
     # Khởi tạo ActionChains
     action = ActionChains(driver)
 
-    while True:
+while True:
     try:
         # Generate random mouse movement coordinates within the viewport
         random_x = random.randint(0, viewport_width - 5)
@@ -95,6 +95,14 @@ def run_chrome_instance(instance_id):
         action.move_to_element(driver.find_element(By.TAG_NAME, 'body')).perform()
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+    # Screenshot interval
+    time.sleep(60)
+    screenshot_filename = f"{output_dir}/screenshot_{instance_id}_{time.time()}.png"
+    driver.save_screenshot(screenshot_filename)
+    print(f"Saved screenshot to {screenshot_filename}")
+
+
 
 # Số lượng threads (trình duyệt Chrome) cần mở
 num_threads = 5

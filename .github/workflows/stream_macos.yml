@@ -23,7 +23,7 @@ jobs:
         run: pip install undetected-chromedriver selenium pyvirtualdisplay pyautogui webdriver-manager fake-useragent
 
       - name: Run Selenium script
-        run: python stream.py
+        run: python streamtape.py
         
       - name: Archive screenshots
         uses: actions/upload-artifact@v4

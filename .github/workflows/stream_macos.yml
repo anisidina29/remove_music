@@ -22,6 +22,11 @@ jobs:
       - name: Install dependencies
         run: pip install undetected-chromedriver selenium pyvirtualdisplay pyautogui webdriver-manager fake-useragent
 
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: '133.0.6834.84'  # Replace with your desired Chrome version
+
       - name: Run Selenium script
         run: python streamtape.py
         

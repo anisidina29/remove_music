@@ -25,7 +25,7 @@ jobs:
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 133
+          chrome-version: 132
           install-chromedriver: true
 
       - name: Run Selenium script

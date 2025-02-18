@@ -10,11 +10,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
+#from webdriver_manager.chrome import ChromeDriverManager
+#from selenium.webdriver.chrome.service import Service
 # from webdriver_manager.chrome import ChromeDriverManager
 # import undetected_chromedriver.v2 as uc
-from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.chrome.options import Options
 # Danh sách các liên kết
 link_list = [
 "https://streamtape.com/v/r8d7y1gbg2ib22J/OND18002.mp4",

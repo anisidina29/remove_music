@@ -80,9 +80,9 @@ def run_thread(links, thread_id):
                     for cookie in cookies:
                         driver.add_cookie(cookie)
                 driver.refresh()
-                print("Đã sử dụng lại cookies.")
+                print("Da dung lai cookies")
             else:
-                print("Không tìm thấy file cookies. Bạn cần đăng nhập thủ công lần đầu.")
+                print("Khong tim thay cookies")
 
             perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))  # Adjust based on actual elements
         except Exception as e:
@@ -120,9 +120,9 @@ def main():
             for cookie in cookies:
                 driver.add_cookie(cookie)
         driver.refresh()
-        print("Đã sử dụng lại cookies.")
+        print("Da dung lai cookies")
     else:
-        print("Không tìm thấy file cookies. Bạn cần đăng nhập thủ công lần đầu.")
+        print("Khong tin thay cookies")
 
     driver.implicitly_wait(10)
     

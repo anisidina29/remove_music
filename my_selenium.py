@@ -8,6 +8,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 import chromedriver_autoinstaller
 from random import shuffle
+import os
+import json
 
 # Automatically install the ChromeDriver and get its path
 chromedriver_autoinstaller.install()
@@ -60,7 +62,7 @@ def perform_human_like_actions(driver, element):
 
     except WebDriverException as e:
         print(f"Failed to click element: {e}")
-        
+
 def run_thread(links, thread_id):
     MAX_DRIVERS = 5  # Reduce the number of drivers per thread
     drivers = []

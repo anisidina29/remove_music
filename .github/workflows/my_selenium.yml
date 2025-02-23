@@ -24,10 +24,10 @@ jobs:
         run: |
           pip install selenium chromedriver_autoinstaller
       
-      - name: Create cookies file
-        env:
-          COOKIES: ${{ secrets.COOKIES }}
-        run: echo "$COOKIES" > cookies.json
+#      - name: Create cookies file
+ #       env:
+  #        COOKIES: ${{ secrets.COOKIES }}
+   #     run: echo "$COOKIES" > cookies.json
 
       - name: Run Selenium script
         run: python my_selenium.py 

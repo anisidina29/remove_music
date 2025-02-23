@@ -26,7 +26,7 @@ jobs:
       
       - name: Create cookies file
         env:
-          COOKIES: ${{ secrets.cookies }}
+          COOKIES: ${{ secrets.COOKIES }}
         run: echo "$COOKIES" > cookies.json
 
       - name: Run Selenium script

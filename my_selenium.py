@@ -41,14 +41,26 @@ def random_delay(min_seconds=1, max_seconds=5):
 
 def perform_human_like_actions(driver, element):
     actions = ActionChains(driver)
-    actions.move_to_element(element).perform()
-    random_delay(0.5, 1.0)
-    offset_x = random.randint(-element.size['width'] // 4, element.size['width'] // 4)
-    offset_y = random.randint(-element.size['height'] // 4, element.size['height'] // 4)
-    actions.move_by_offset(offset_x, offset_y).click().perform()
-    print(f"Clicked at offset ({offset_x}, {offset_y})")
-    actions.move_by_offset(-offset_x, -offset_y).perform()
+    
+    try:
+        # Di chuyển đến phần tử
+        actions.move_to_element(element).perform()
+        random_delay(0.5, 1.0)
 
+        # Tính toán offset ngẫu nhiên
+        offset_x = random.randint(-element.size['width'] // 4, element.size['width'] // 4)
+        offset_y = random.randint(-element.size['height'] // 4, element.size['height'] // 4)
+
+        # Di chuyển chuột và click
+        actions.move_by_offset(offset_x, offset_y).click().perform()
+        print(f"Clicked at offset ({offset_x}, {offset_y})")
+
+        # Đưa chuột về vị trí cũ
+        actions.move_by_offset(-offset_x, -offset_y).perform()
+
+    except WebDriverException as e:
+        print(f"Failed to click element: {e}")
+        
 def run_thread(links, thread_id):
     MAX_DRIVERS = 5  # Reduce the number of drivers per thread
     drivers = []
@@ -58,6 +70,18 @@ def run_thread(links, thread_id):
         drivers.append(driver)
         try:
             driver.get(links[i])
+            # Kiểm tra xem file cookies đã tồn tại chưa
+            if os.path.exists("cookies.json"):
+                # Nếu file cookies có, tải cookies từ file và thêm vào trình duyệt
+                with open("cookies.json", "r") as file:
+                    cookies = json.load(file)
+                    for cookie in cookies:
+                        driver.add_cookie(cookie)
+                driver.refresh()
+                print("Đã sử dụng lại cookies.")
+            else:
+                print("Không tìm thấy file cookies. Bạn cần đăng nhập thủ công lần đầu.")
+
             perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))  # Adjust based on actual elements
         except Exception as e:
             print(f"Error with driver {i}: {e}")
@@ -86,6 +110,18 @@ def main():
     user_agent = random.choice(user_agents)
     driver = create_driver(user_agent)
     driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
+    # Kiểm tra xem file cookies đã tồn tại chưa
+    if os.path.exists("cookies.json"):
+        # Nếu file cookies có, tải cookies từ file và thêm vào trình duyệt
+        with open("cookies.json", "r") as file:
+            cookies = json.load(file)
+            for cookie in cookies:
+                driver.add_cookie(cookie)
+        driver.refresh()
+        print("Đã sử dụng lại cookies.")
+    else:
+        print("Không tìm thấy file cookies. Bạn cần đăng nhập thủ công lần đầu.")
+
     driver.implicitly_wait(10)
     
     links = []

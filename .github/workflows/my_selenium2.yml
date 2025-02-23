@@ -1,0 +1,40 @@
+name: My Selenium 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  youtube_bot:
+    continue-on-error: true
+    strategy:
+      matrix:
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install selenium chromedriver_autoinstaller  undetected-chromedriver fake-useragent
+      
+#      - name: Create cookies file
+ #       env:
+  #        COOKIES: ${{ secrets.COOKIES }}
+   #     run: echo "$COOKIES" > cookies.json
+
+      - name: Run Selenium script
+        run: python my_selenium2.py 
+
+      - name: Archive screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots-${{ github.run_id }}
+          path: screenshots/
